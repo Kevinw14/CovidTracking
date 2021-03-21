@@ -30,6 +30,7 @@ class Stat: Codable {
         case dateInt = "date"
         case positive
         case death
+        case dateString
     }
     
     required init(from decoder: Decoder) throws {
@@ -37,6 +38,13 @@ class Stat: Codable {
         self.dateInt = try container.decode(Int.self, forKey: .dateInt)
         self.positive = try container.decodeIfPresent(Int.self, forKey: .positive) ?? 0
         self.death = try container.decodeIfPresent(Int.self, forKey: .death) ?? 0
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(dateString, forKey: .dateString)
+        try container.encode(death, forKey: .death)
+        try container.encode(positive, forKey: .positive)
     }
     
     static func ==(lhs: Stat, rhs: Stat) -> Bool {

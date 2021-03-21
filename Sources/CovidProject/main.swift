@@ -29,6 +29,15 @@ class Main: NSObject, URLCovidRequestDelegate {
     func urlCovidRequestDataReceived(request: DataRequest, data: Data, state: Stat.State) {
         do {
             var stats: [Stat] = try JSONDecoder().decode([Stat].self, from: data)
+            var everyTwoWeeks: [Stat] = []
+            
+            for stat in stats {
+                if stat.date.isLastDate || stat.date.isTwoWeeksIn {
+                    everyTwoWeeks.append(stat)
+                }
+            }
+            
+            stats = everyTwoWeeks
             stats.sort(by: {$0.date < $1.date})
             let url = URL(fileURLWithPath: "./statistics/\(state.rawValue).json")
             let data: Data = try JSONEncoder().encode(stats)
